@@ -124,7 +124,8 @@ def parse_icmp_packet(data):
     print("\t\t\t - Type: {}".format(imcp_header[0]))
     print("\t\t\t - Code: {}".format(imcp_header[1]))
     print("\t\t\t - Checksum: {}".format(imcp_header[2]))
-    print("\t\t\t - Data: " + str(data[8:]))
+    imcp_data = data[8:].decode('UTF-8', 'backslashreplace')
+    print("\t\t\t - Data: " + imcp_data)
 
 
 """
