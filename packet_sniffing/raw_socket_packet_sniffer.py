@@ -27,7 +27,7 @@ def receive_packet(sock):
         # See at: https://en.wikipedia.org/wiki/EtherType
         if ether_header[3] == 8:
             # Parse IP header by taking first 20 characters of IP packet
-            ipv4_data = raw_data[ETH_LEN:20+ETH_LEN]
+            ipv4_data = raw_data[ETH_LEN:]
             parse_ipv4_header(ipv4_data)
 """
 +-----------------------------------------------------+ +----------------------+ +--------------+
@@ -86,7 +86,7 @@ def parse_ipv4_header(ip_data):
     ihl = (version_and_IHL & 0x0F) * 4 # 0x0F is 00001111 
 
     # 8x means 8 bytes padding, that means we do not get identification, flags and fragment offset. Simillar to 2x
-    ttl, protocol, src, dest = unpack("! 8x B B 2x 4s 4s", ip_data)
+    ttl, protocol, src, dest = unpack("! 8x B B 2x 4s 4s", ip_data[:20])
 
     src_addr = ".".join(map(str,src))
     dest_addr = ".".join(map(str, dest))
@@ -103,11 +103,75 @@ def parse_ipv4_header(ip_data):
         parse_icmp_packet(data)
     elif protocol == 6:
         parse_tcp_packet(data)
-    elif protocol = 17:
+    elif protocol == 17:
         parse_udp_packet(data)
     else:
         print("Some other protocols !!! Waiting for updates later")
 
+"""
+ 0               1               2               3               4
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |     Type      |     Code      |          Checksum             |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                             unused                            |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |      Internet Header + 64 bits of Original Data Datagram      |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+"""
+def parse_icmp_packet(data):
+    imcp_header = unpack("! BBH",data[:4])
+    print("\n\t\t - IMCP Packet:")
+    print("\t\t\t - Type: {}".format(imcp_header[0]))
+    print("\t\t\t - Code: {}".format(imcp_header[1]))
+    print("\t\t\t - Checksum: {}".format(imcp_header[2]))
+    print("\t\t\t - Data: " + str(data[8:]))
+
+
+"""
+ 0               1               2               3               4
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |          Source Port          |       Destination Port        |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                        Sequence Number                        |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                    Acknowledgment Number                      |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |  Data |           |U|A|P|R|S|F|                               |
+ | Offset| Reserved  |R|C|S|S|Y|I|            Window             |
+ |       |           |G|K|H|T|N|N|                               |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |           Checksum            |         Urgent Pointer        |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                    Options                    |    Padding    |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ |                             data                              |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+"""
+def parse_tcp_packet(data):
+    print()
+
+"""
+ 0        8        16       24       31
+ +--------+--------+--------+--------+
+ |     Source      |   Destination   |
+ |      Port       |      Port       |
+ +--------+--------+--------+--------+
+ |                 |                 |
+ |     Length      |    Checksum     |
+ +--------+--------+--------+--------+
+ |
+ |          data octets ...
+ +---------------- ...
+"""
+def parse_udp_packet(data):
+    udp_header = unpack("! HHHH", data[:8])
+    print("\n\t\t - UDP Packet:")
+    print("\t\t\t - Source Port: {}".format(udp_header[0]))
+    print("\t\t\t - Destination Port: {}".format(udp_header[1]))
+    print("\t\t\t - Length: {}".format(udp_header[1]))
+    print("\t\t\t - Checksum: {}".format(udp_header[2]))
+    udp_data = data[8:].decode('UTF-8', 'backslashreplace')
+    print("\t\t\t - Data: " + udp_data)
 
 
 if __name__ == "__main__":
