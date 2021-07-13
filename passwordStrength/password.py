@@ -80,13 +80,13 @@ class Password_Check(Tk):
 
 
     def reset_entered_passwd(self):
-        print("reset entered password")
+        self.password_var.set('')
 
     def reset_generated_passwd(self):
-        print("reset generated password")
+        self.generated_password_var.set('')
 
     def generate_passwd(self):
-        print("generate password")
+        print()
 
     def close(self):
         self.destroy()
@@ -94,6 +94,28 @@ class Password_Check(Tk):
     def password_check(self, passwd):
         if(len(passwd) > 8):
             self.num_char_label.config(style='Valid.TLabel')
+        else:
+            self.num_char_label.config(style='Invalid.TLabel')
+
+        if any(c.isdigit() for c in passwd):
+            self.digit_label.config(style='Valid.TLabel')
+        else:
+            self.digit_label.config(style='Invalid.TLabel')
+        
+        if any(c.isupper() for c in passwd):
+            self.uppercase_label.config(style='Valid.TLabel')
+        else:
+            self.uppercase_label.config(style='Invalid.TLabel')
+        
+        if any(c.islower() for c in passwd):
+            self.lowercase_label.config(style='Valid.TLabel')
+        else:
+            self.lowercase_label.config(style='Invalid.TLabel')
+        
+        if re.search(r"\W", passwd):
+            self.symbol_label.config(style='Valid.TLabel')
+        else:
+            self.symbol_label.config(style='Invalid.TLabel')
 
     def validate(self, *agrs):
         passwd = self.password_var.get()
@@ -102,4 +124,3 @@ class Password_Check(Tk):
 if __name__ == "__main__":
     app = Password_Check()
     app.mainloop()
-        
