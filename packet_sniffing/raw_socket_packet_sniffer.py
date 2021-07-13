@@ -149,7 +149,26 @@ def parse_icmp_packet(data):
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 """
 def parse_tcp_packet(data):
-    print()
+    tcp_header = unpack("! HHLLH", data[:14])
+    print("\n\t\t - TCP Packet:")
+    print("\t\t\t - Source Port: {}".format(tcp_header[0]))
+    print("\t\t\t - Destination Port: {}".format(tcp_header[1]))
+    print("\t\t\t - Sequence Number: {}".format(tcp_header[2]))
+    print("\t\t\t - Acknowledgment Number: {}".format(tcp_header[3]))
+    offset = tcp_header[4]
+    data_offset = (offset >> 12) * 4
+    flag_URG = (offset & 0x20) >> 5
+    flag_ACK = (offset & 0x10) >> 4
+    flag_PSH = (offset & 0x08) >> 3
+    flag_RST = (offset & 0x04) >> 2
+    flag_SYN = (offset & 0x02) >> 1
+    flag_FIN = offset & 0x01
+    print("\t\t\t - Flags ==> URG: {}, ACK: {}, PSH: {}, RST: {}, SYN: {}, FIN: {}".format(
+        flag_URG, flag_ACK, flag_PSH, flag_RST, flag_SYN, flag_FIN))
+
+    tcp_data = data[data_offset:].decode('UTF-8', 'backslashreplace')
+    print("\t\t\t - Data: " + tcp_data)
+
 
 """
  0        8        16       24       31
