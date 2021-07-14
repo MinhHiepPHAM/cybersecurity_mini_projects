@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
+import secrets
+import string
 
 class Password_Check(Tk):
     def __init__(self):
@@ -86,7 +88,9 @@ class Password_Check(Tk):
         self.generated_password_var.set('')
 
     def generate_passwd(self):
-        print()
+        result_str = string.ascii_letters + string.digits + string.punctuation
+        password = ''.join(secrets.choice(result_str) for i in range(20)) # for a 20-character password
+        self.generated_password_var.set(password)
 
     def close(self):
         self.destroy()
