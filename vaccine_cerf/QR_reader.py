@@ -10,7 +10,7 @@ import qrtools
 from pyzbar.pyzbar import decode
 
 qr = qrtools.QR()
-if qr.decode(sys.argv[1]):
+if qr.decode(sys.argv[1]): # the argument should be a photo of QR code
     payload = qr.data[4:] # remove HC1: prefix 
  
     # decode Base45
