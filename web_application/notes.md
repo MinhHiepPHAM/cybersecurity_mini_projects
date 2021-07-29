@@ -45,7 +45,52 @@ body {                                  <--+
 	we can put a border around a block of txt
  </p>
 ```
+  We can also use *span* or *div* tag for text design if do not want to use *style* attribute.
+
  - An **embedded style sheet** in the *<head>* of the document
+
+```html
+<head>
+	<title> Title </title>
+	<style>
+		body {
+			font-family: arial, sans-serif;
+		}
+		p {
+			color: blue;
+		}
+		a {
+			color:green;
+			background-color: lightgray;
+		}
+	<style>
+</head>
+```
+
  - As an **external style sheet** in a separate file
 
+```html
+<head>
+	<title> Title </title>
+	<link type="text/css" rel="stylesheet" href="rules.css"
+</head>
+```
+In the `rules.css` file:
+
+```css
+body {
+	font-family: arial, sans-serif;
+}
+p {
+	color: blue;
+}
+a {
+	color:green;
+	background-color: lightgray;
+}     
+```
+
+**Examples of using id and class in CSS**
+
+![ID and class](figures/id_and_class.png)
 
