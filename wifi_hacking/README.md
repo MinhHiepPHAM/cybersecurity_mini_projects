@@ -1,6 +1,6 @@
 # Cracking Wifi password
 
-- [Cracking wifi WPA2 Handshake using Kali Linux] (https://www.youtube.com/watch?v=WfYxrLaqlN8):
+- [Cracking wifi WPA2 Handshake using Kali Linux](https://www.youtube.com/watch?v=WfYxrLaqlN8):
 This video will discuss network adapter, airmon-ng, airdump-ng, aircrack-ng. This method is recommended for weak wifi password.
 
 - [Brute force Wifi WPA2](https://www.youtube.com/watch?v=J8A8rKFZW-M&t=0s):
