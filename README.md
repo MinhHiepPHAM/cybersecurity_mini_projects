@@ -5,3 +5,4 @@ The list of project will be updated in this file.
 
 1. Keylogger
 2. Packet sniffing
+3. Password strength
